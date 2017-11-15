@@ -1,7 +1,15 @@
 package ProjectManagementSystem.model;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "companies")
 public class Company {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "idcompanies")
     private int id;
+    @Column(name = "companieName")
     private String name;
 
     public Company( ) {
@@ -13,11 +21,6 @@ public class Company {
 
     public Company(int id) {
         this.id = id;
-    }
-
-    public Company(int id, String name) {
-        this.id = id;
-        this.name = name;
     }
 
     public int getId( ) {

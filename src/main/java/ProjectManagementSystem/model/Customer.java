@@ -1,14 +1,18 @@
 package ProjectManagementSystem.model;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "customers")
 public class Customer {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "idcustomers")
     private int id;
+    @Column(name = "customerName")
     private String name;
 
     public Customer( ) {
-    }
-
-    public Customer(int id) {
-        this.id = id;
     }
 
     public Customer(String name) {

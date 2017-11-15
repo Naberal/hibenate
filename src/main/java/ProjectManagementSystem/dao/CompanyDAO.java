@@ -1,21 +1,21 @@
 package ProjectManagementSystem.dao;
 
-import ProjectManagementSystem.connection.DBConnection;
 import ProjectManagementSystem.model.Company;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.cfg.Configuration;
 
-import java.sql.*;
-import java.util.LinkedList;
 import java.util.List;
 
 public class CompanyDAO implements DAO<Company, Integer> {
-    private final String SAVE = "INSERT INTO companies(companieName) VALUES(?)";
-    private final String UPDATE = "UPDATE companies SET companieName=? WHERE idcompanies=?";
-    private final String DELETE = "DELETE FROM  companies WHERE idcompanies=?";
-    private final String FIND_BY_ID = "SELECT * FROM  companies WHERE idcompanies = ?";
-    private final String FIND_BY_NAME = "SELECT * FROM  companies WHERE companieName = ?";
-    private final String GET_ALL = "SELECT * FROM  companies";
-    private final String COUNT = "SELECT COUNT(*) FROM companies";
-    private DBConnection connection = new DBConnection();
+    private SessionFactory sessionFactory;
+    private Company company;
+
+    public CompanyDAO( ) {
+        sessionFactory = new Configuration().configure().buildSessionFactory();
+    }
+
     private int lasId;
 
     @Override
@@ -25,102 +25,69 @@ public class CompanyDAO implements DAO<Company, Integer> {
     }
 
     private void lastId( ) {
-        try (Connection connection = this.connection.getConnection();
-             Statement statement = connection.prepareStatement(COUNT)) {
-            ResultSet resultSet = statement.executeQuery(COUNT);
-            resultSet.next();
-            lasId = resultSet.getInt(1);
-        } catch (SQLException e) {
-            e.printStackTrace();
+        try (Session session = sessionFactory.openSession()) {
+            List<Integer> maxID = session.createQuery("SELECT max(id) FROM Company ").list();
+            lasId = maxID.get(0);
         }
     }
 
     @Override
     public void save(Company company) {
-        try (Connection connection = this.connection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SAVE)) {
-            preparedStatement.setString(1, company.getName());
-            preparedStatement.execute();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        try (Session session = sessionFactory.openSession()) {
+            Transaction transaction = session.beginTransaction();
+            session.save(company);
+            transaction.commit();
         }
     }
 
     @Override
     public void update(Company company) {
-        try (Connection connection = this.connection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE)) {
-            preparedStatement.setString(1, company.getName());
-            preparedStatement.setInt(2, company.getId());
-            preparedStatement.execute();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        try (Session session = sessionFactory.openSession()) {
+            Transaction transaction = session.beginTransaction();
+            this.company=session.get(Company.class,company.getId());
+            this.company.setName(company.getName());
+            session.update(this.company);
+            transaction.commit();
         }
     }
 
     @Override
     public void delete(Integer id) {
-        try (Connection connection = this.connection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(DELETE)) {
-            preparedStatement.setInt(1, id);
-            preparedStatement.execute();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        try (Session session = sessionFactory.openSession()) {
+            Transaction transaction = session.beginTransaction();
+            company = session.get(Company.class, id);
+            session.delete(company);
+            transaction.commit();
         }
     }
 
-    Company company;
-
     @Override
     public Company findByID(Integer integer) {
-        try (Connection connection = this.connection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_ID)) {
-            preparedStatement.setInt(1, integer);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            company = company(resultSet);
-            resultSet.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        try (Session session = sessionFactory.openSession()) {
+            company = session.get(Company.class, integer);
         }
         return company;
     }
 
     @Override
     public Company findByName(String name) {
-        try (Connection connection = this.connection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_NAME)) {
-            preparedStatement.setString(1, name);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            company = company(resultSet);
-            resultSet.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        try (Session session = sessionFactory.openSession()) {
+            List<Company> companys = session.createQuery("select c from Company c where c.name like: name")
+                    .setParameter("name", name)
+                    .list();
+            company = companys.get(0);
         }
         return company;
     }
 
     @Override
     public List<Company> getAll( ) {
-        List<Company> list = new LinkedList<>();
-        try (Connection connection = this.connection.getConnection();
-             Statement statement = connection.createStatement()) {
-            ResultSet resultSet = statement.executeQuery(GET_ALL);
-            while (resultSet.next()) {
-                list.add(company = new Company(resultSet.getInt("idcompanies"),
-                        resultSet.getString("companieName")));
-            }
-            resultSet.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        List<Company> list = null;
+        try (Session session = sessionFactory.openSession()) {
+            Transaction transaction = session.beginTransaction();
+            list = session.createQuery("from Company").list();
+            transaction.commit();
         }
         return list;
-    }
-
-    private Company company(ResultSet resultSet) throws SQLException {
-        if (resultSet.next()) {
-            company = new Company(resultSet.getInt("idcompanies"),
-                    resultSet.getString("companieName"));
-        }
-        return company;
     }
 }

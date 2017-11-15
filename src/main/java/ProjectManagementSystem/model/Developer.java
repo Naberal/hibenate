@@ -1,23 +1,32 @@
 package ProjectManagementSystem.model;
 
-import java.util.Arrays;
+import javax.persistence.*;
 import java.util.LinkedList;
 import java.util.List;
 
+@Entity
+@Table(name = "developer")
 public class Developer {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "iddeveloper")
     private int id;
+    @Column(name = "firstName")
     private String firstName;
+    @Column(name = "lastName")
     private String lastName;
+    @Column(name = "experianse")
     private int experience;
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Project project;
+    @Column(name = "selery")
     private Double salary;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "developersskills", joinColumns = @JoinColumn(name = "developer"),
+            inverseJoinColumns = @JoinColumn(name = "Skill"))
     private List<Skill> skills = new LinkedList<>();
 
     public Developer( ) {
-    }
-
-    public Developer(int id) {
-        this.id = id;
     }
 
     public Developer(int id, String firstName, String lastName, int experience, Project project, Double selery) {

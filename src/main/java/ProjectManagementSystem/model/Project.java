@@ -1,15 +1,23 @@
 package ProjectManagementSystem.model;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "projects")
 public class Project {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "idproject")
     private int id;
+    @Column(name = "projectName")
     private String name;
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Company company;
-    private  Customer customer;
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Customer customer;
+    @Column(name = "cost")
     private Double cost;
 
-    public Project(int id) {
-        this.id = id;
-    }
 
     public Project(int id, String name, Company company, Customer customer, Double cost) {
         this.id = id;

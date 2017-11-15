@@ -2,91 +2,85 @@ package ProjectManagementSystem.dao;
 
 import ProjectManagementSystem.connection.DBConnection;
 import ProjectManagementSystem.model.Project;
+import ProjectManagementSystem.model.Skill;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.cfg.Configuration;
 
 import java.sql.*;
 import java.util.LinkedList;
 import java.util.List;
 
 public class ProjectDAO implements DAO<Project, Integer> {
-    private final String SAVE = "INSERT INTO projects(projectName, idcostomer, idcompanie, cost) VALUES(?,?,?,?)";
-    private final String UPDATE = "UPDATE projects SET projectsName=?,idcostomer=?, idcompanie=?,cost=? " +
-            "WHERE idproject=?";
-    private final String DELETE = "DELETE FROM projects WHERE  idproject=?";
-    private final String FIND_BY_ID = "SELECT * FROM projects WHERE  idproject = ?";
-    private final String FIND_BY_NAME = "SELECT * FROM projects WHERE projectsName = ?";
-    private final String GET_ALL = "SELECT * FROM projects";
-    private final String COUNT = "SELECT COUNT(*) FROM projects";
-    private DBConnection connection = new DBConnection();
-    private int lastId;
+    private SessionFactory sessionFactory;
+    private Project project;
+
+    public ProjectDAO( ) {
+        sessionFactory = new Configuration().configure().buildSessionFactory();
+    }
+
+    private int lasId;
 
     @Override
     public int getCount( ) {
         lastId();
-        return lastId;
+        return lasId;
     }
 
     private void lastId( ) {
-        try (Connection connection = this.connection.getConnection();
-             Statement statement = connection.prepareStatement(COUNT)) {
-            ResultSet resultSet = statement.executeQuery(COUNT);
-            resultSet.next();
-            lastId = resultSet.getInt(1);
-        } catch (SQLException e) {
-            e.printStackTrace();
+        try (Session session = sessionFactory.openSession()) {
+            List<Integer> maxID = session.createQuery("SELECT max(id) FROM Project ").list();
+            lasId = maxID.get(0);
         }
     }
 
+
     @Override
     public void save(Project project) {
-        try (Connection connection = this.connection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SAVE)) {
-            preparedStatement.setString(1, project.getName());
-            preparedStatement.setInt(2, project.getCustomer().getId());
-            preparedStatement.setInt(3, project.getCompany().getId());
-            preparedStatement.setDouble(4, project.getCost());
-            preparedStatement.execute();
-        } catch (SQLException e) {
+        try (Session session = sessionFactory.openSession()) {
+            Transaction transaction = session.beginTransaction();
+            session.save(project);
+            transaction.commit();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     @Override
     public void update(Project project) {
-        try (Connection connection = this.connection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE)) {
-            preparedStatement.setString(1, project.getName());
-            preparedStatement.setInt(2, project.getCustomer().getId());
-            preparedStatement.setInt(3, project.getCompany().getId());
-            preparedStatement.setDouble(4, project.getCost());
-            preparedStatement.setInt(5, project.getId());
-            preparedStatement.execute();
-        } catch (SQLException e) {
+        try (Session session = sessionFactory.openSession()) {
+            Transaction transaction = session.beginTransaction();
+            this.project = session.get(Project.class, project.getId());
+            this.project.setName(project.getName());
+            this.project.setCustomer(project.getCustomer());
+            this.project.setCompany(project.getCompany());
+            this.project.setCost(project.getCost());
+            session.update(this.project);
+            transaction.commit();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     @Override
     public void delete(Integer id) {
-        try (Connection connection = this.connection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(DELETE)) {
-            preparedStatement.setInt(1, id);
-            preparedStatement.execute();
-        } catch (SQLException e) {
+        try (Session session = sessionFactory.openSession()) {
+            Transaction transaction = session.beginTransaction();
+            project = session.get(Project.class, id);
+            session.delete(project);
+            transaction.commit();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    Project project;
 
     @Override
     public Project findByID(Integer integer) {
-        try (Connection connection = this.connection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_ID)) {
-            preparedStatement.setInt(1, integer);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            project = project(resultSet);
-            resultSet.close();
-        } catch (SQLException e) {
+        try (Session session = sessionFactory.openSession()) {
+            project = session.get(Project.class, integer);
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return project;
@@ -94,13 +88,12 @@ public class ProjectDAO implements DAO<Project, Integer> {
 
     @Override
     public Project findByName(String name) {
-        try (Connection connection = this.connection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_NAME)) {
-            preparedStatement.setString(1, name);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            project = project(resultSet);
-            resultSet.close();
-        } catch (SQLException e) {
+        try (Session session = sessionFactory.openSession()) {
+            List<Project> projects = session.createQuery("select p from Project p where p.name like: name")
+                    .setParameter("name", name)
+                    .list();
+            project = projects.get(0);
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return project;
@@ -108,32 +101,14 @@ public class ProjectDAO implements DAO<Project, Integer> {
 
     @Override
     public List<Project> getAll( ) {
-        List<Project> projects = new LinkedList<>();
-        try (Connection connection = this.connection.getConnection();
-             Statement statement = connection.createStatement()) {
-            ResultSet resultSet = statement.executeQuery(GET_ALL);
-            while (resultSet.next()) {
-                projects.add(project = new Project(resultSet.getInt(1),
-                        resultSet.getString(2),
-                        new CompanyDAO().findByID(resultSet.getInt(4)),
-                        new CustomerDAO().findByID(resultSet.getInt(3)),
-                        resultSet.getDouble(5)));
-            }
-            resultSet.close();
-        } catch (SQLException e) {
+        List<Project> projects = null;
+        try (Session session = sessionFactory.openSession()) {
+            Transaction transaction = session.beginTransaction();
+            projects = session.createQuery("from Project").list();
+            transaction.commit();
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return projects;
-    }
-
-    private Project project(ResultSet resultSet) throws SQLException {
-        if (resultSet.next()) {
-            project = new Project(resultSet.getInt(1),
-                    resultSet.getString(2),
-                    new CompanyDAO().findByID(resultSet.getInt(4)),
-                    new CustomerDAO().findByID(resultSet.getInt(3)),
-                    resultSet.getDouble(5));
-        }
-        return project;
     }
 }

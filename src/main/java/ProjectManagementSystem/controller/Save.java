@@ -23,7 +23,7 @@ public class Save {
                 dao.save(saveProject());
             }
         } catch (NullPointerException e) {
-            System.out.println("");
+            e.printStackTrace();
         }
 
     }

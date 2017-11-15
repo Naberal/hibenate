@@ -31,12 +31,13 @@ public class Update {
     }
 
     private Project updateProject( ) {
+        DAO dao=new ProjectDAO();
         System.out.println("Enter project Id");
         id = View.numScanner();
-        if (new ProjectDAO().getCount() < id) {
+        if (dao.getCount() < id) {
             System.err.println("wrong id");
         } else {
-            project = new ProjectDAO().findByID(id);
+            project = (Project) dao.findByID(id);
             project = newDataProject(project);
 
         }
@@ -44,12 +45,13 @@ public class Update {
     }
 
     private Developer updateDeveloper( ) {
+        DAO dao=new DeveloperDAO();
         System.out.println("Enter developer Id");
         id = View.numScanner();
-        if (new DeveloperDAO().getCount() < id) {
+        if (dao.getCount() < id) {
             System.err.println("wrong id");
         } else {
-            developer = new DeveloperDAO().findByID(id);
+            developer = (Developer) dao.findByID(id);
             developer = newDataDeveloper(developer);
         }
         return developer;
@@ -58,12 +60,13 @@ public class Update {
 
     private Skill updateSkill( ) {
         Skill skill = null;
+        DAO dao=new SkillDAO();
         System.out.println("enter skill ID");
         id = View.numScanner();
-        if (new SkillDAO().getCount() < id) {
+        if (dao.getCount() < id) {
             System.err.println("wrong id");
         } else {
-            skill = new SkillDAO().findByID(id);
+            skill = (Skill) dao.findByID(id);
             System.out.println("Enter new skill name");
             skill.setName(View.scanner.next());
         }
@@ -72,12 +75,13 @@ public class Update {
 
     private Customer updateCustomer( ) {
         Customer customer = null;
+        DAO dao= new CustomerDAO();
         System.out.println("enter customer ID");
         id = View.numScanner();
-        if (new CustomerDAO().getCount() < id) {
+        if (dao.getCount() < id) {
             System.err.println("wrong id");
         } else {
-            customer = new CustomerDAO().findByID(View.numScanner());
+            customer = (Customer) dao.findByID(id);
             System.out.println("Enter new customer name");
             customer.setName(View.scanner.next());
         }
@@ -86,12 +90,13 @@ public class Update {
 
     private Company updateCompany( ) {
         Company company = null;
+        DAO dao= new CompanyDAO();
         System.out.println("Enter company Id");
         id = View.numScanner();
-        if (new CompanyDAO().getCount() < id) {
+        if (dao.getCount() < id) {
             System.err.println("wrong id");
         } else {
-            company = new CompanyDAO().findByID(View.numScanner());
+            company = (Company) dao.findByID(id);
             System.out.println("Enter new company name");
             company.setName(View.scanner.next());
         }
@@ -168,8 +173,9 @@ public class Update {
     }
 
     private List<Skill> skillsList( ) {
+        DAO dao=new SkillDAO();
         List<Skill> list = null;
-        id = new SkillDAO().getCount();
+        id = dao.getCount();
         System.out.println("Enter Skills");
         while (View.scanner.hasNextInt()) {
             if (View.scanner.nextInt() > id) {
@@ -177,7 +183,7 @@ public class Update {
                 break;
             } else {
                 list = new LinkedList<>();
-                list.add(new SkillDAO().findByID(id));
+                list.add((Skill) dao.findByID(id));
                 System.out.println("next one.(to exit. different meaning)");
             }
         }
