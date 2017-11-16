@@ -5,11 +5,12 @@ import javax.persistence.*;
 @Entity
 @Table(name = "skill")
 public class Skill {
-    @Column(name = "skill")
-    private String name;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
+    @Column(name = "skill")
+    private String name;
+
 
     public Skill( ) {
     }

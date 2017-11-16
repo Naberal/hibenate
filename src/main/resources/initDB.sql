@@ -65,9 +65,9 @@ CREATE INDEX idcostomer_idx
 
 CREATE TABLE skill
 (
-  skill   VARCHAR(45) NOT NULL,
   idskill INT AUTO_INCREMENT
     PRIMARY KEY,
+  skill   VARCHAR(45) NOT NULL,
   CONSTRAINT skill_UNIQUE
   UNIQUE (skill),
   CONSTRAINT idskill_UNIQUE

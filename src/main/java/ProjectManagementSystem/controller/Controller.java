@@ -37,7 +37,7 @@ public class Controller {
 
     public void findByID(int id, Object obj) {
         dao = (DAO) obj;
-        if (dao.getCount() < id) {
+        if (dao.getCount() <= id) {
             System.err.println("wrong id");
         } else {
             try {

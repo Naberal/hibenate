@@ -57,7 +57,7 @@ public class Save {
         System.out.println("Enter Project(id)");
         int id = View.numScanner();
         while (true) {
-            if (new ProjectDAO().getCount() < id) {
+            if (new ProjectDAO().getCount() <= id) {
                 System.out.println("wrong id");
                 System.out.println("Enter again");
             } else {
@@ -77,7 +77,7 @@ public class Save {
         int id = new SkillDAO().getCount();
         System.out.println("Enter Skills");
         while (View.scanner.hasNextInt()) {
-            if (View.scanner.nextInt() > id) {
+            if (View.scanner.nextInt() >= id) {
                 System.err.println("wrong id");
                 break;
             } else {

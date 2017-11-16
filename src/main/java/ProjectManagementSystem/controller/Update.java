@@ -34,7 +34,7 @@ public class Update {
         DAO dao = new ProjectDAO();
         System.out.println("Enter project Id");
         id = View.numScanner();
-        if (dao.getCount() < id) {
+        if (dao.getCount() <= id) {
             System.err.println("wrong id");
         } else {
             project = (Project) dao.findByID(id);
@@ -48,7 +48,7 @@ public class Update {
         DAO dao = new DeveloperDAO();
         System.out.println("Enter developer Id");
         id = View.numScanner();
-        if (dao.getCount() < id) {
+        if (dao.getCount() <= id) {
             System.err.println("wrong id");
         } else {
             developer = (Developer) dao.findByID(id);
@@ -63,7 +63,7 @@ public class Update {
         DAO dao = new SkillDAO();
         System.out.println("enter skill ID");
         id = View.numScanner();
-        if (dao.getCount() < id) {
+        if (dao.getCount() <= id) {
             System.err.println("wrong id");
         } else {
             skill = (Skill) dao.findByID(id);
@@ -78,7 +78,7 @@ public class Update {
         DAO dao = new CustomerDAO();
         System.out.println("enter customer ID");
         id = View.numScanner();
-        if (dao.getCount() < id) {
+        if (dao.getCount() <= id) {
             System.err.println("wrong id");
         } else {
             customer = (Customer) dao.findByID(id);
@@ -93,7 +93,7 @@ public class Update {
         DAO dao = new CompanyDAO();
         System.out.println("Enter company Id");
         id = View.numScanner();
-        if (dao.getCount() < id || dao.findByID(id).equals(null)) {
+        if (dao.getCount() <= id ) {
             System.err.println("wrong id");
         } else {
             company = (Company) dao.findByID(id);
@@ -178,7 +178,7 @@ public class Update {
         id = dao.getCount();
         System.out.println("Enter Skills");
         while (View.scanner.hasNextInt()) {
-            if (View.scanner.nextInt() > id) {
+            if (View.scanner.nextInt() >= id) {
                 System.err.println("wrong id");
                 break;
             } else {
