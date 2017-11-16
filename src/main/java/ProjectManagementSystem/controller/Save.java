@@ -4,8 +4,10 @@ import ProjectManagementSystem.dao.*;
 import ProjectManagementSystem.model.*;
 import ProjectManagementSystem.view.View;
 
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 public class Save {
 
@@ -57,7 +59,7 @@ public class Save {
         System.out.println("Enter Project(id)");
         int id = View.numScanner();
         while (true) {
-            if (new ProjectDAO().getCount() <= id) {
+            if (new ProjectDAO().getCount() < id) {
                 System.out.println("wrong id");
                 System.out.println("Enter again");
             } else {
@@ -72,16 +74,16 @@ public class Save {
         return developer;
     }
 
-    private List<Skill> skillsList( ) {
-        List<Skill> list = null;
+    private Set<Skill> skillsList( ) {
+        Set<Skill> list = null;
         int id = new SkillDAO().getCount();
         System.out.println("Enter Skills");
         while (View.scanner.hasNextInt()) {
-            if (View.scanner.nextInt() >= id) {
+            if (View.scanner.nextInt() > id) {
                 System.err.println("wrong id");
                 break;
             } else {
-                list = new LinkedList<>();
+                list = new HashSet<>();
                 list.add(new SkillDAO().findByID(id));
                 System.out.println("next one.(to exit. different meaning)");
             }

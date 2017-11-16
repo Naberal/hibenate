@@ -1,8 +1,7 @@
 package ProjectManagementSystem.model;
 
 import javax.persistence.*;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "developer")
@@ -18,13 +17,14 @@ public class Developer {
     @Column(name = "experianse")
     private int experience;
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "workOnProjectid")
     private Project project;
     @Column(name = "selery")
     private Double salary;
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "developersskills", joinColumns = @JoinColumn(name = "developer"),
-            inverseJoinColumns = @JoinColumn(name = "Skill"))
-    private List<Skill> skills = new LinkedList<>();
+    @JoinTable(name = "developersskills", joinColumns = {@JoinColumn(name = "id_developer")},
+            inverseJoinColumns ={@JoinColumn(name = "id_skill")})
+    private Set<Skill> skills ;
 
     public Developer( ) {
     }
@@ -39,7 +39,7 @@ public class Developer {
     }
 
     public Developer(String firstName, String lastName, int experiance, Project project, Double selery,
-                     List<Skill> skills) {
+                     Set<Skill> skills) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.experience = experiance;
@@ -96,11 +96,11 @@ public class Developer {
         this.salary = salary;
     }
 
-    public List<Skill> getSkills( ) {
+    public Set<Skill> getSkills( ) {
         return skills;
     }
 
-    public void setSkills(List<Skill> skills) {
+    public void setSkills(Set<Skill> skills) {
         this.skills = skills;
     }
 

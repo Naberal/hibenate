@@ -4,8 +4,10 @@ import ProjectManagementSystem.dao.*;
 import ProjectManagementSystem.model.*;
 import ProjectManagementSystem.view.View;
 
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 public class Update {
     private Project project;
@@ -34,7 +36,7 @@ public class Update {
         DAO dao = new ProjectDAO();
         System.out.println("Enter project Id");
         id = View.numScanner();
-        if (dao.getCount() <= id) {
+        if (dao.getCount() < id) {
             System.err.println("wrong id");
         } else {
             project = (Project) dao.findByID(id);
@@ -48,7 +50,7 @@ public class Update {
         DAO dao = new DeveloperDAO();
         System.out.println("Enter developer Id");
         id = View.numScanner();
-        if (dao.getCount() <= id) {
+        if (dao.getCount() < id) {
             System.err.println("wrong id");
         } else {
             developer = (Developer) dao.findByID(id);
@@ -63,7 +65,7 @@ public class Update {
         DAO dao = new SkillDAO();
         System.out.println("enter skill ID");
         id = View.numScanner();
-        if (dao.getCount() <= id) {
+        if (dao.getCount() < id) {
             System.err.println("wrong id");
         } else {
             skill = (Skill) dao.findByID(id);
@@ -78,7 +80,7 @@ public class Update {
         DAO dao = new CustomerDAO();
         System.out.println("enter customer ID");
         id = View.numScanner();
-        if (dao.getCount() <= id) {
+        if (dao.getCount() < id) {
             System.err.println("wrong id");
         } else {
             customer = (Customer) dao.findByID(id);
@@ -93,7 +95,7 @@ public class Update {
         DAO dao = new CompanyDAO();
         System.out.println("Enter company Id");
         id = View.numScanner();
-        if (dao.getCount() <= id ) {
+        if (dao.getCount() < id ) {
             System.err.println("wrong id");
         } else {
             company = (Company) dao.findByID(id);
@@ -172,17 +174,17 @@ public class Update {
         return false;
     }
 
-    private List<Skill> skillsList( ) {
+    private Set<Skill> skillsList( ) {
         DAO dao = new SkillDAO();
-        List<Skill> list = null;
+        Set<Skill> list = null;
         id = dao.getCount();
-        System.out.println("Enter Skills");
+        System.out.println("Enter Skills(id)");
         while (View.scanner.hasNextInt()) {
-            if (View.scanner.nextInt() >= id) {
+            if (View.scanner.nextInt() > id) {
                 System.err.println("wrong id");
                 break;
             } else {
-                list = new LinkedList<>();
+                list = new HashSet<>();
                 list.add((Skill) dao.findByID(id));
                 System.out.println("next one.(to exit. different meaning)");
             }

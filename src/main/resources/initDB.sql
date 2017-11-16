@@ -31,12 +31,12 @@ CREATE INDEX idproject_idx
 
 CREATE TABLE developersskills
 (
-  developer INT NOT NULL,
-  Skill     INT NOT NULL,
+  id_developer INT NOT NULL,
+  id_skill     INT NOT NULL,
   CONSTRAINT iddeveloper
-  FOREIGN KEY (developer) REFERENCES developer (iddeveloper),
+  FOREIGN KEY (id_developer) REFERENCES developer (iddeveloper),
   CONSTRAINT idskill
-  FOREIGN KEY (Skill) REFERENCES skill (idskill)
+  FOREIGN KEY (id_skill) REFERENCES skill (idskill)
 );
 CREATE INDEX iddeveloper_idx
   ON developersskills (developer);

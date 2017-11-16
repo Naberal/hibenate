@@ -12,8 +12,10 @@ public class Project {
     @Column(name = "projectName")
     private String name;
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "idcompanie")
     private Company company;
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "idcostomer")
     private Customer customer;
     @Column(name = "cost")
     private Double cost;
