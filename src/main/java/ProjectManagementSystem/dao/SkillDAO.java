@@ -63,6 +63,8 @@ public class SkillDAO implements DAO<Skill, Integer> {
             skill = session.get(Skill.class, id);
             session.delete(skill);
             transaction.commit();
+        } catch (Exception e) {
+            System.out.println("Company with id " + id + " not exist");
         }
     }
 
@@ -77,9 +79,8 @@ public class SkillDAO implements DAO<Skill, Integer> {
     @Override
     public Skill findByName(String name) {
         try (Session session = sessionFactory.openSession()) {
-            List<Skill> skills = session.createQuery("select s from Skill s where s.name like: name")
-                    .setParameter("name", name)
-                    .list();
+            List<Skill> skills = session.createQuery("from Skill where name like :name")
+                    .setParameter("name", name).list();
             skill = skills.get(0);
         }
         return skill;

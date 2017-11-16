@@ -27,7 +27,7 @@ public class Controller {
 
     public void delete(int id, Object obj) {
         dao = (DAO) obj;
-         if (dao.getCount() < id) {
+         if (dao.getCount() <= id) {
             System.err.println("wrong id");
         } else {
             dao.delete(id);
@@ -40,7 +40,11 @@ public class Controller {
         if (dao.getCount() < id) {
             System.err.println("wrong id");
         } else {
-            System.out.println(dao.findByID(id).toString());
+            try {
+                System.out.println(dao.findByID(id).toString());
+            }catch (NullPointerException e){
+                System.err.println("wrong id");
+            }
         }
     }
 
@@ -48,7 +52,7 @@ public class Controller {
         dao = (DAO) obj;
         try {
             System.out.println(dao.findByName(name).toString());
-        } catch (NullPointerException e) {
+        }catch (Exception e){
             System.err.println("wrong name");
         }
 

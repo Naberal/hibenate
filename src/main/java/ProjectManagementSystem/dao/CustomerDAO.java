@@ -60,6 +60,8 @@ public class CustomerDAO implements DAO<Customer, Integer> {
             customer = session.get(Customer.class, id);
             session.delete(customer);
             transaction.commit();
+        }catch (Exception e) {
+            System.out.println("Company with id " + id + " not exist");
         }
     }
 
@@ -74,9 +76,8 @@ public class CustomerDAO implements DAO<Customer, Integer> {
     @Override
     public Customer findByName(String name) {
         try (Session session = sessionFactory.openSession()) {
-            List<Customer> customers = session.createQuery("select c from Customer c where c.name like: name")
-                    .setParameter("name", name)
-                    .list();
+            List<Customer> customers = session.createQuery("from Customer where name like :name")
+                    .setParameter("name", name).list();
             customer = customers.get(0);
         }
         return customer;

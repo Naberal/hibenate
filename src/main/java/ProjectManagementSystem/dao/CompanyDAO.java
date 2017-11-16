@@ -44,7 +44,7 @@ public class CompanyDAO implements DAO<Company, Integer> {
     public void update(Company company) {
         try (Session session = sessionFactory.openSession()) {
             Transaction transaction = session.beginTransaction();
-            this.company=session.get(Company.class,company.getId());
+            this.company = session.get(Company.class, company.getId());
             this.company.setName(company.getName());
             session.update(this.company);
             transaction.commit();
@@ -58,6 +58,8 @@ public class CompanyDAO implements DAO<Company, Integer> {
             company = session.get(Company.class, id);
             session.delete(company);
             transaction.commit();
+        } catch (Exception e) {
+            System.out.println("Company with id " + id + " not exist");
         }
     }
 
@@ -65,16 +67,15 @@ public class CompanyDAO implements DAO<Company, Integer> {
     public Company findByID(Integer integer) {
         try (Session session = sessionFactory.openSession()) {
             company = session.get(Company.class, integer);
+            return company;
         }
-        return company;
     }
 
     @Override
     public Company findByName(String name) {
         try (Session session = sessionFactory.openSession()) {
-            List<Company> companys = session.createQuery("select c from Company c where c.name like: name")
-                    .setParameter("name", name)
-                    .list();
+            List<Company> companys = session.createQuery("from Company where name like :name")
+                    .setParameter("name", name).list();
             company = companys.get(0);
         }
         return company;

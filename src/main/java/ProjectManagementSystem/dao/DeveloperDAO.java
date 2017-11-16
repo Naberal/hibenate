@@ -42,8 +42,6 @@ public class DeveloperDAO implements DAO<Developer, Integer> {
             Transaction transaction = session.beginTransaction();
             session.save(developer);
             transaction.commit();
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
@@ -60,8 +58,6 @@ public class DeveloperDAO implements DAO<Developer, Integer> {
             this.developer.setSkills(developer.getSkills());
             session.update(this.developer);
             transaction.commit();
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
@@ -73,6 +69,8 @@ public class DeveloperDAO implements DAO<Developer, Integer> {
             developer = session.get(Developer.class, id);
             session.delete(developer);
             transaction.commit();
+        } catch (Exception e) {
+            System.out.println("Company with id " + id + " not exist");
         }
     }
 
@@ -87,9 +85,8 @@ public class DeveloperDAO implements DAO<Developer, Integer> {
     @Override
     public Developer findByName(String name) {
         try (Session session = sessionFactory.openSession()) {
-            List<Developer> developers = session.createQuery("select d from Developer d where d.firstName like: name")
-                    .setParameter("name", name)
-                    .list();
+            List<Developer> developers = session.createQuery("from Developer where firstName like :name")
+                    .setParameter("name", name).list();
             developer = developers.get(0);
         }
         return developer;

@@ -26,12 +26,12 @@ public class Update {
                 dao.update(updateProject());
             }
         } catch (NullPointerException e) {
-            System.out.println("");
+            System.err.println("thea are now searching value with id");
         }
     }
 
     private Project updateProject( ) {
-        DAO dao=new ProjectDAO();
+        DAO dao = new ProjectDAO();
         System.out.println("Enter project Id");
         id = View.numScanner();
         if (dao.getCount() < id) {
@@ -45,7 +45,7 @@ public class Update {
     }
 
     private Developer updateDeveloper( ) {
-        DAO dao=new DeveloperDAO();
+        DAO dao = new DeveloperDAO();
         System.out.println("Enter developer Id");
         id = View.numScanner();
         if (dao.getCount() < id) {
@@ -60,7 +60,7 @@ public class Update {
 
     private Skill updateSkill( ) {
         Skill skill = null;
-        DAO dao=new SkillDAO();
+        DAO dao = new SkillDAO();
         System.out.println("enter skill ID");
         id = View.numScanner();
         if (dao.getCount() < id) {
@@ -75,7 +75,7 @@ public class Update {
 
     private Customer updateCustomer( ) {
         Customer customer = null;
-        DAO dao= new CustomerDAO();
+        DAO dao = new CustomerDAO();
         System.out.println("enter customer ID");
         id = View.numScanner();
         if (dao.getCount() < id) {
@@ -90,10 +90,10 @@ public class Update {
 
     private Company updateCompany( ) {
         Company company = null;
-        DAO dao= new CompanyDAO();
+        DAO dao = new CompanyDAO();
         System.out.println("Enter company Id");
         id = View.numScanner();
-        if (dao.getCount() < id) {
+        if (dao.getCount() < id || dao.findByID(id).equals(null)) {
             System.err.println("wrong id");
         } else {
             company = (Company) dao.findByID(id);
@@ -173,7 +173,7 @@ public class Update {
     }
 
     private List<Skill> skillsList( ) {
-        DAO dao=new SkillDAO();
+        DAO dao = new SkillDAO();
         List<Skill> list = null;
         id = dao.getCount();
         System.out.println("Enter Skills");

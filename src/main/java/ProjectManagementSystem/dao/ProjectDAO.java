@@ -58,8 +58,6 @@ public class ProjectDAO implements DAO<Project, Integer> {
             this.project.setCost(project.getCost());
             session.update(this.project);
             transaction.commit();
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
@@ -71,7 +69,7 @@ public class ProjectDAO implements DAO<Project, Integer> {
             session.delete(project);
             transaction.commit();
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("Company with id " + id + " not exist");
         }
     }
 
@@ -80,8 +78,6 @@ public class ProjectDAO implements DAO<Project, Integer> {
     public Project findByID(Integer integer) {
         try (Session session = sessionFactory.openSession()) {
             project = session.get(Project.class, integer);
-        } catch (Exception e) {
-            e.printStackTrace();
         }
         return project;
     }
@@ -89,9 +85,8 @@ public class ProjectDAO implements DAO<Project, Integer> {
     @Override
     public Project findByName(String name) {
         try (Session session = sessionFactory.openSession()) {
-            List<Project> projects = session.createQuery("select p from Project p where p.name like: name")
-                    .setParameter("name", name)
-                    .list();
+            List<Project> projects = session.createQuery("from Project where name like :name")
+                    .setParameter("name", name).list();
             project = projects.get(0);
         } catch (Exception e) {
             e.printStackTrace();
