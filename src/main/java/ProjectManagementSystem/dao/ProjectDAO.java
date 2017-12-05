@@ -1,15 +1,14 @@
 package ProjectManagementSystem.dao;
 
-import ProjectManagementSystem.connection.DBConnection;
+
 import ProjectManagementSystem.model.Project;
-import ProjectManagementSystem.model.Skill;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 
-import java.sql.*;
-import java.util.LinkedList;
+
 import java.util.List;
 
 public class ProjectDAO implements DAO<Project, Integer> {

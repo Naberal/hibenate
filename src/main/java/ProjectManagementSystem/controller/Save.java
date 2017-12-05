@@ -25,30 +25,41 @@ public class Save {
                 dao.save(saveProject());
             }
         } catch (NullPointerException e) {
-            e.printStackTrace();
         }
 
     }
 
-    private Company saveCompany( ) {
+    private Company saveCompany() {
         System.out.println("Enter Name");
         Company company = new Company(View.scanner.next());
-        return company;
+        Company company1 = new CompanyDAO().findByName(company.getName());
+        if (company.getName().equals(company1.getName())) {
+            System.out.println("it company already exist");
+            return null;
+        } else return company;
     }
 
-    private Customer saveCustomer( ) {
+    private Customer saveCustomer() {
         System.out.println("Enter Name");
         Customer customer = new Customer(View.scanner.next());
-        return customer;
+        Customer customer1 = new CustomerDAO().findByName(customer.getName());
+        if (customer.getName().equals(customer1.getName())) {
+            System.out.println("it customer already exist");
+            return null;
+        } else return customer;
     }
 
-    private Skill saveSkill( ) {
+    private Skill saveSkill() {
         System.out.println("Enter skill");
         Skill skill = new Skill(View.scanner.next());
-        return skill;
+        Skill skill1 = new SkillDAO().findByName(skill.getName());
+        if (skill.getName().equals(skill1.getName())) {
+            System.out.println("it skill already exist");
+            return null;
+        } else return skill;
     }
 
-    private Developer saveDeveloper( ) {
+    private Developer saveDeveloper() {
         Developer developer = new Developer();
         System.out.println("Enter FirstName");
         developer.setFirstName(View.scanner.next());
@@ -71,11 +82,16 @@ public class Save {
         developer.setSalary((double) View.numScanner());
         System.out.println("Enter Skills(id)");
         developer.setSkills(skillsList());
-        return developer;
+        Developer developer1=new DeveloperDAO().findByName(developer.getFirstName());
+        if (developer.equals(developer1)) {
+            System.out.println("it developer already exist");
+            return null;
+        } else
+            return developer;
     }
 
-    private Set<Skill> skillsList( ) {
-        Set<Skill> list = null;
+    private List<Skill> skillsList() {
+        List<Skill> list = null;
         int id = new SkillDAO().getCount();
         System.out.println("Enter Skills");
         while (View.scanner.hasNextInt()) {
@@ -83,7 +99,7 @@ public class Save {
                 System.err.println("wrong id");
                 break;
             } else {
-                list = new HashSet<>();
+                list = new LinkedList<>();
                 list.add(new SkillDAO().findByID(id));
                 System.out.println("next one.(to exit. different meaning)");
             }
@@ -91,7 +107,7 @@ public class Save {
         return list;
     }
 
-    private Project saveProject( ) {
+    private Project saveProject() {
         Project project = new Project();
         System.out.println("Enter Name");
         project.setName(View.scanner.next());
@@ -99,7 +115,13 @@ public class Save {
         project.setCompany(new CompanyDAO().findByID(View.numScanner()));
         System.out.println("Enter customer (id)");
         project.setCustomer(new CustomerDAO().findByID(View.numScanner()));
+        System.out.println("Enter cost");
         project.setCost((double) View.numScanner());
-        return project;
+        Project project1=new ProjectDAO().findByName(project.getName());
+        if (project.equals(project1)) {
+            System.out.println("it project already exist");
+            return null;
+        } else return project;
     }
 }
+

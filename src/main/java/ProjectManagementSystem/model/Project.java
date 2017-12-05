@@ -80,6 +80,28 @@ public class Project {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Project project = (Project) o;
+
+        if (!name.equals(project.name)) return false;
+        if (!company.equals(project.company)) return false;
+        if (!customer.equals(project.customer)) return false;
+        return cost.equals(project.cost);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = name.hashCode();
+        result = 31 * result + company.hashCode();
+        result = 31 * result + customer.hashCode();
+        result = 31 * result + cost.hashCode();
+        return result;
+    }
+
+    @Override
     public String toString( ) {
         return "Project{" +
                 "id=" + id +

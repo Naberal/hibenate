@@ -1,6 +1,7 @@
 package ProjectManagementSystem.model;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -24,7 +25,7 @@ public class Developer {
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "developersskills", joinColumns = {@JoinColumn(name = "id_developer")},
             inverseJoinColumns ={@JoinColumn(name = "id_skill")})
-    private Set<Skill> skills ;
+    private List<Skill> skills ;
 
     public Developer( ) {
     }
@@ -39,7 +40,7 @@ public class Developer {
     }
 
     public Developer(String firstName, String lastName, int experiance, Project project, Double selery,
-                     Set<Skill> skills) {
+                     List<Skill> skills) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.experience = experiance;
@@ -96,12 +97,30 @@ public class Developer {
         this.salary = salary;
     }
 
-    public Set<Skill> getSkills( ) {
+    public List<Skill> getSkills( ) {
         return skills;
     }
 
-    public void setSkills(Set<Skill> skills) {
+    public void setSkills(List<Skill> skills) {
         this.skills = skills;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Developer developer = (Developer) o;
+
+        if (!firstName.equals(developer.firstName)) return false;
+        return lastName.equals(developer.lastName);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = firstName.hashCode();
+        result = 31 * result + lastName.hashCode();
+        return result;
     }
 
     @Override
